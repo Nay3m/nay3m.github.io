@@ -81,7 +81,14 @@ const waitForAnimation = async (animation) => {
 };
 
 const animateThemeChange = async (nextTheme) => {
-  if (themeAnimationBusy || !themeDropSvg?.animate) {
+  if (themeAnimationBusy) {
+    return;
+  }
+
+  const update = () => setTheme(nextTheme, true);
+  update();
+
+  if (!themeDropSvg?.animate) {
     return;
   }
 
@@ -106,7 +113,6 @@ const animateThemeChange = async (nextTheme) => {
   root.style.setProperty("--ripple-ry", rippleRy);
   root.style.setProperty("--ripple-cover", nextTheme === "dark" ? "#081c17" : "#f1eadc");
 
-  const update = () => setTheme(nextTheme, true);
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   if (reduceMotion) {
@@ -236,7 +242,6 @@ const animateThemeChange = async (nextTheme) => {
         return;
       }
       fallbackFinished = true;
-      update();
       clearThemeAnimation();
     };
     coverAnimation.finished.then(() => {
