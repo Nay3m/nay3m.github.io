@@ -809,7 +809,8 @@ h1 em {
 .water-line,
 .reeds path,
 .birds path,
-.leaf-mark path {
+.leaf-mark path,
+.elephant-mark path {
   fill: none;
   stroke: var(--art-line);
   stroke-linecap: round;
@@ -885,6 +886,15 @@ h1 em {
   transform-box: fill-box;
   transform-origin: center;
   animation: leaf-breathe 8s ease-in-out infinite;
+}
+
+.elephant-mark .elephant-body {
+  fill: rgba(153, 197, 189, 0.1);
+}
+
+.elephant-mark path {
+  stroke: var(--art-main);
+  stroke-width: 1;
 }
 
 .habitat-switcher {
