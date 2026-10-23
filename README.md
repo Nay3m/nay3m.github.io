@@ -1,4 +1,4 @@
-# Jannatul Nayeem — Wildlife Portfolio & Field Notes
+# Jannatul Nayem — Wildlife Portfolio & Field Notes
 
 <p align="center">
   <img src="./assets/wildlife-field-notes.gif" alt="Animated wildlife field note with moving waterlines, birds, and an elephant field mark" width="100%" />
@@ -8,7 +8,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
 [![Tech Stack](https://img.shields.io/badge/stack-HTML5%20%7C%20CSS3%20%7C%20Vanilla%20JS-amber.svg)](#tech-stack)
 
-A field-journal-inspired, zero-dependency personal portfolio site designed for **Jannatul Nayeem**, an undergraduate Zoology student at Jahangirnagar University focusing on wildlife conservation, ecology, biodiversity monitoring, habitat assessment, and GIS for ecological research.
+A field-journal-inspired, zero-dependency personal portfolio site designed for **Jannatul Nayem**, an undergraduate Zoology student at Jahangirnagar University focusing on wildlife conservation, ecology, biodiversity monitoring, habitat assessment, and GIS for ecological research.
 
 ---
 
@@ -37,13 +37,13 @@ A field-journal-inspired, zero-dependency personal portfolio site designed for *
 ## 📁 Repository Structure
 
 ```text
-jannatul-nayeem-wildlife-portfolio/
+jannatul-nayem-wildlife-portfolio/
 ├── index.html               # Main semantic markup, SVG assets, and page sections
 ├── styles.css               # Design system, themes (light/dark), responsive layout & print styles
 ├── script.js                # Theme animations, habitat switcher, keyboard navigation & clipboard actions
 ├── cv.html                  # Academic CV template formatted for print and PDF generation
-├── Jannatul-Nayeem-CV.pdf   # Formatted, print-ready Curriculum Vitae (PDF)
-├── Jannatul-Nayeem-CV.docx  # Original Curriculum Vitae document (DOCX)
+├── Jannatul-Nayem-CV.pdf     # Formatted, print-ready Curriculum Vitae (PDF)
+├── Jannatul-Nayem-CV.docx    # Original Curriculum Vitae document (DOCX)
 ├── assets/
 │   └── wildlife-field-notes.gif # Animated field-note banner
 ├── favicon.svg              # Scalable naturalist droplet & leaf vein favicon
@@ -107,7 +107,7 @@ Running a local web server ensures full support for local font loading and View 
 If you update `cv.html` and want to recompile the PDF on Windows:
 
 ```powershell
-& 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe' --headless --disable-gpu --print-to-pdf="Jannatul-Nayeem-CV.pdf" "cv.html"
+& 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe' --headless --disable-gpu --print-to-pdf="Jannatul-Nayem-CV.pdf" "cv.html"
 ```
 
 ---
