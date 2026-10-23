@@ -1,5 +1,9 @@
 # Jannatul Nayeem — Wildlife Portfolio & Field Notes
 
+<p align="center">
+  <img src="./assets/wildlife-field-notes.gif" alt="Animated wildlife field note with moving waterlines, birds, and an elephant field mark" width="100%" />
+</p>
+
 [![Site Status](https://img.shields.io/badge/status-ready--to--deploy-brightgreen.svg)](#deployment)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
 [![Tech Stack](https://img.shields.io/badge/stack-HTML5%20%7C%20CSS3%20%7C%20Vanilla%20JS-amber.svg)](#tech-stack)
@@ -12,6 +16,7 @@ A field-journal-inspired, zero-dependency personal portfolio site designed for *
 
 - **Field-Journal Aesthetic**: Crafted with typography reminiscent of naturalists' notebooks, incorporating topographic contour overlays, field stamp badges, and textured note cards.
 - **Interactive SVG Habitat Art**: An original vector illustration in the hero section with a live habitat palette switcher (**Wetland**, **Canopy**, **Edge**) dynamically adjusting notes and visual tones.
+- **Animated Field Note**: A custom wildlife GIF with drifting birds, moving waterlines, a breathing sun, and an elephant field mark, reused from the profile README.
 - **W3C ARIA Keyboard Navigation**: Accessible tablist interaction allowing keyboard power users to switch habitats using `ArrowLeft`, `ArrowRight`, `Home`, and `End` keys.
 - **Organic Water-Droplet Theme Switcher**:
   - Seamless toggle between light paper and dark forest themes.
@@ -39,6 +44,8 @@ jannatul-nayeem-wildlife-portfolio/
 ├── cv.html                  # Academic CV template formatted for print and PDF generation
 ├── Jannatul-Nayeem-CV.pdf   # Formatted, print-ready Curriculum Vitae (PDF)
 ├── Jannatul-Nayeem-CV.docx  # Original Curriculum Vitae document (DOCX)
+├── assets/
+│   └── wildlife-field-notes.gif # Animated field-note banner
 ├── favicon.svg              # Scalable naturalist droplet & leaf vein favicon
 ├── og-preview.svg           # 1200x630 OpenGraph social share card
 └── README.md                # Project documentation and deployment guide
@@ -49,7 +56,8 @@ jannatul-nayeem-wildlife-portfolio/
 ## 🗺️ Sections Overview
 
 1. **Hero**: Field notes header, academic standing (First-Year CGPA: 3.92 / 4.00), dual CV download links (PDF & DOCX), and interactive SVG habitat landscape.
-2. **01 / Fieldbook (`#fieldbook`)**: Academic grounding in Zoology at Jahangirnagar University, verified academic performance, and recurring ecological inquiry questions.
+2. **Motion Study**: A lightweight animated field-note strip carrying the portfolio’s wetland, waterline, bird, and elephant visual language.
+3. **01 / Fieldbook (`#fieldbook`)**: Academic grounding in Zoology at Jahangirnagar University, verified academic performance, and recurring ecological inquiry questions.
 3. **02 / Research Lens (`#research`)**: Six foundational directions:
    - Conservation & Management
    - Ecology & Behaviour
