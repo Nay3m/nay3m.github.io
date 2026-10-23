@@ -86,9 +86,9 @@ const animateThemeChange = async (nextTheme) => {
   }
 
   const update = () => setTheme(nextTheme, true);
-  update();
 
   if (!themeDropSvg?.animate) {
+    update();
     return;
   }
 
@@ -242,6 +242,7 @@ const animateThemeChange = async (nextTheme) => {
         return;
       }
       fallbackFinished = true;
+      update();
       clearThemeAnimation();
     };
     coverAnimation.finished.then(() => {
