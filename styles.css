@@ -439,6 +439,8 @@ body,
   z-index: 0;
   inset: 0;
   background: var(--ripple-cover, var(--deep));
+  background: color-mix(in srgb, var(--ripple-cover, var(--deep)) 42%, transparent);
+  backdrop-filter: blur(2px) saturate(1.08);
   clip-path: ellipse(0 0 at var(--ripple-x, 50vw) var(--ripple-y, 40vh));
   opacity: 0;
 }
@@ -458,7 +460,7 @@ body,
 }
 
 .theme-drop path {
-  fill: var(--water);
+  fill: color-mix(in srgb, var(--water) 78%, transparent);
 }
 
 .theme-drop ellipse {
@@ -479,7 +481,7 @@ body,
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--water);
+  background: color-mix(in srgb, var(--water) 72%, transparent);
   box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.6), inset 0 -1px 2px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.25);
   opacity: 0;
 }
@@ -494,7 +496,7 @@ body,
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: var(--water);
+  background: color-mix(in srgb, var(--water) 68%, transparent);
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), inset 0 -1px 1px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
