@@ -12,7 +12,7 @@ A no-build, GitHub Pages-ready portfolio site for Jannatul Nayeem, a Zoology und
 
 ## Before publishing
 
-- Replace `www.linkedin.com/in/[add-profile-slug]` in `index.html` with the verified profile URL.
+- LinkedIn: `https://www.linkedin.com/in/nay3m`
 - Confirm the internship year and duties.
 - Add confirmed responsibilities for Butterfly Fair and Scout experience if desired.
 - Confirm the CGPA scale, second-year CGPA, SSC GPA, and language proficiency.
