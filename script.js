@@ -129,6 +129,9 @@ const animateThemeChange = async (nextTheme) => {
   ], { duration: 340, easing: "cubic-bezier(0.25, 0, 0.3, 1)", fill: "forwards" });
 
   if (!await waitForAnimation(dropToButton) || run !== themeAnimationRun) {
+    if (run === themeAnimationRun) {
+      clearThemeAnimation();
+    }
     return;
   }
 
@@ -143,6 +146,9 @@ const animateThemeChange = async (nextTheme) => {
   ], { duration: fallDuration, easing: "cubic-bezier(0.33, 0, 0.67, 0.33)", fill: "forwards" });
 
   if (!await waitForAnimation(dropToWater) || run !== themeAnimationRun) {
+    if (run === themeAnimationRun) {
+      clearThemeAnimation();
+    }
     return;
   }
 
@@ -195,12 +201,19 @@ const animateThemeChange = async (nextTheme) => {
       { clipPath: `ellipse(0 0 at ${rippleX} ${rippleY})` },
       { clipPath: `ellipse(${rippleRx} ${rippleRy} at ${rippleX} ${rippleY})` }
     ], { duration: 2200, easing: "cubic-bezier(0.12, 0.72, 0.28, 1)", fill: "both" });
-    coverAnimation.finished.then(() => {
-      if (run === themeAnimationRun) {
-        update();
-        clearThemeAnimation();
+    let fallbackFinished = false;
+    const finishFallback = () => {
+      if (fallbackFinished || run !== themeAnimationRun) {
+        return;
       }
+      fallbackFinished = true;
+      update();
+      clearThemeAnimation();
+    };
+    coverAnimation.finished.then(() => {
+      finishFallback();
     }).catch(() => {});
+    window.setTimeout(finishFallback, 2400);
   };
 
   root.classList.add("theme-rippling");
@@ -208,7 +221,16 @@ const animateThemeChange = async (nextTheme) => {
   if (document.startViewTransition) {
     try {
       const transition = document.startViewTransition(update);
-      transition.finished.finally(clearThemeAnimation);
+      let transitionFinished = false;
+      const finishTransition = () => {
+        if (transitionFinished || run !== themeAnimationRun) {
+          return;
+        }
+        transitionFinished = true;
+        clearThemeAnimation();
+      };
+      transition.finished.then(finishTransition, finishTransition);
+      window.setTimeout(finishTransition, 2400);
       return;
     } catch (error) {
       startFallback();
