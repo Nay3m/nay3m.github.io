@@ -7,6 +7,9 @@ const themeDrop = document.querySelector("[data-theme-drop]");
 const themeDropSvg = themeDrop?.querySelector(".theme-drop");
 const themeRippleCover = themeDrop?.querySelector(".theme-ripple-cover");
 const themeDropBead = themeDrop?.querySelector(".theme-drop-bead");
+const themeWaterFlow = themeDrop?.querySelector(".theme-water-flow");
+const themeWaterRipple = themeDrop?.querySelector(".theme-water-ripple");
+const themeBirds = [...(themeDrop?.querySelectorAll(".theme-bird") ?? [])];
 
 const setTheme = (theme, persist = false) => {
   document.documentElement.dataset.theme = theme;
@@ -60,6 +63,12 @@ const clearThemeAnimation = () => {
   themeDropBead?.style.removeProperty("left");
   themeDropBead?.style.removeProperty("top");
   themeRippleCover?.style.removeProperty("opacity");
+  themeWaterFlow?.classList.remove("is-flowing");
+  themeWaterRipple?.classList.remove("is-flowing");
+  themeBirds.forEach((bird) => {
+    bird.style.removeProperty("left");
+    bird.style.removeProperty("top");
+  });
 };
 
 const waitForAnimation = async (animation) => {
@@ -121,6 +130,23 @@ const animateThemeChange = async (nextTheme) => {
   themeDrop?.classList.add("is-active");
   document.body.classList.add("theme-changing");
 
+  const birdPlans = [
+    { offsetX: -150, offsetY: -90, dx: -150, dy: -32, duration: 980, delay: 30, scale: 0.82 },
+    { offsetX: 56, offsetY: -128, dx: 166, dy: -48, duration: 1040, delay: 140, scale: 0.58 },
+    { offsetX: -30, offsetY: -160, dx: 78, dy: -26, duration: 860, delay: 90, scale: 0.44 }
+  ];
+
+  themeBirds.forEach((bird, index) => {
+    const plan = birdPlans[index];
+    bird.style.left = `${x + plan.offsetX}px`;
+    bird.style.top = `${Math.max(70, y + plan.offsetY)}px`;
+    registerAnimation(bird, [
+      { transform: `translate(0, 8px) scale(${plan.scale})`, opacity: 0 },
+      { transform: `translate(${plan.dx * 0.35}px, ${plan.dy * 0.3}px) scale(${plan.scale})`, opacity: 0.78, offset: 0.22 },
+      { transform: `translate(${plan.dx}px, ${plan.dy}px) scale(${plan.scale * 0.86})`, opacity: 0 }
+    ], { duration: plan.duration, delay: plan.delay, easing: "cubic-bezier(0.22, 0.61, 0.36, 1)", fill: "both" });
+  });
+
   const dropToButton = registerAnimation(themeDropSvg, [
     { transform: `${move(dropStartY)} scale(0.25)`, opacity: 0 },
     { transform: `${move(dropStartY)} scale(0.8, 0.66)`, opacity: 1, offset: 0.45 },
@@ -151,6 +177,9 @@ const animateThemeChange = async (nextTheme) => {
     }
     return;
   }
+
+  themeWaterFlow?.classList.add("is-flowing");
+  themeWaterRipple?.classList.add("is-flowing");
 
   registerAnimation(themeDropSvg, [
     { transform: `${move(impactOffset)} scale(0.95, 1.1)`, opacity: 1 },
