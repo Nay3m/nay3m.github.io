@@ -395,20 +395,35 @@ body,
 .theme-bird {
   position: absolute;
   display: block;
-  width: 32px !important;
-  height: 16px !important;
-  max-width: none;
-  max-height: none;
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.22));
+  width: 36px;
+  height: 18px;
   opacity: 0;
-  overflow: visible !important;
-  transform-box: fill-box;
   transform-origin: center;
   will-change: transform, opacity;
 }
 
-.theme-bird path {
-  fill: var(--water);
+.theme-bird::before,
+.theme-bird::after {
+  position: absolute;
+  top: 7px;
+  width: 18px;
+  height: 9px;
+  border-top: 2px solid var(--water);
+  border-radius: 50% 50% 0 0;
+  content: "";
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+}
+
+.theme-bird::before {
+  left: 0;
+  transform: rotate(-18deg);
+  transform-origin: right bottom;
+}
+
+.theme-bird::after {
+  right: 0;
+  transform: rotate(18deg);
+  transform-origin: left bottom;
 }
 
 .theme-ripple-cover {
