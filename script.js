@@ -133,7 +133,7 @@ const contactStatus = document.querySelector("[data-contact-status]");
 
 if (copyEmail) {
   copyEmail.addEventListener("click", async () => {
-    const email = "jannatulnayeem0723@gmail.com";
+    const email = "jannat.nay3m@gmail.com";
     try {
       await navigator.clipboard.writeText(email);
       contactStatus.textContent = "Email copied to clipboard.";
