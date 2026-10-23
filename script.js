@@ -32,12 +32,47 @@ const setTheme = (theme, persist = false) => {
 
 setTheme(document.documentElement.dataset.theme || "light");
 
-themeToggle?.addEventListener("click", () => {
-  const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-  setTheme(nextTheme, true);
+const clearThemeAnimation = () => {
+  document.documentElement.classList.remove("theme-rippling");
   document.body.classList.remove("theme-changing");
+};
+
+const animateThemeChange = (nextTheme, event) => {
+  const x = event.clientX || window.innerWidth / 2;
+  const y = event.clientY || 42;
+  const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+  const root = document.documentElement;
+
+  root.style.setProperty("--ripple-x", `${x}px`);
+  root.style.setProperty("--ripple-y", `${y}px`);
+  root.style.setProperty("--ripple-radius", `${radius}px`);
+  root.style.setProperty("--drop-x", `${x}px`);
+  root.style.setProperty("--drop-y", `${y}px`);
+  root.classList.add("theme-rippling");
+  document.body.classList.remove("theme-changing");
+
+  const update = () => setTheme(nextTheme, true);
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (document.startViewTransition && !reduceMotion) {
+    try {
+      document.body.classList.add("theme-changing");
+      const transition = document.startViewTransition(update);
+      transition.finished.finally(clearThemeAnimation);
+      return;
+    } catch (error) {
+      clearThemeAnimation();
+    }
+  }
+
+  update();
   requestAnimationFrame(() => document.body.classList.add("theme-changing"));
-  window.setTimeout(() => document.body.classList.remove("theme-changing"), 760);
+  window.setTimeout(clearThemeAnimation, 760);
+};
+
+themeToggle?.addEventListener("click", (event) => {
+  const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  animateThemeChange(nextTheme, event);
 });
 
 if (menuToggle && siteNav) {
