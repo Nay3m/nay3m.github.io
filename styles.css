@@ -394,8 +394,11 @@ body,
 
 .theme-bird {
   position: absolute;
+  display: block;
   width: 32px;
   height: 16px;
+  max-width: none;
+  max-height: none;
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.22));
   opacity: 0;
   overflow: visible;

@@ -245,28 +245,6 @@ const animateThemeChange = async (nextTheme) => {
     window.setTimeout(finishFallback, 2400);
   };
 
-  root.classList.add("theme-rippling");
-
-  if (document.startViewTransition) {
-    try {
-      const transition = document.startViewTransition(update);
-      let transitionFinished = false;
-      const finishTransition = () => {
-        if (transitionFinished || run !== themeAnimationRun) {
-          return;
-        }
-        transitionFinished = true;
-        clearThemeAnimation();
-      };
-      transition.finished.then(finishTransition, finishTransition);
-      window.setTimeout(finishTransition, 2400);
-      return;
-    } catch (error) {
-      startFallback();
-      return;
-    }
-  }
-
   startFallback();
 };
 
