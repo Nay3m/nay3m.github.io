@@ -1,5 +1,44 @@
 const menuToggle = document.querySelector(".menu-toggle");
 const siteNav = document.querySelector(".site-nav");
+const themeToggle = document.querySelector("[data-theme-toggle]");
+const themeToggleLabel = document.querySelector(".theme-toggle-label");
+const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+
+const setTheme = (theme, persist = false) => {
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.style.colorScheme = theme;
+
+  if (themeToggle) {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    themeToggle.setAttribute("aria-pressed", String(theme === "dark"));
+    themeToggle.setAttribute("aria-label", `Switch to ${nextTheme} mode`);
+    themeToggle.setAttribute("title", `Switch to ${nextTheme} mode`);
+  }
+
+  if (themeToggleLabel) {
+    themeToggleLabel.textContent = theme;
+  }
+
+  if (themeColorMeta) {
+    themeColorMeta.setAttribute("content", theme === "dark" ? "#081c17" : "#18352e");
+  }
+
+  if (persist) {
+    try {
+      localStorage.setItem("jn-theme", theme);
+    } catch (error) {}
+  }
+};
+
+setTheme(document.documentElement.dataset.theme || "light");
+
+themeToggle?.addEventListener("click", () => {
+  const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  setTheme(nextTheme, true);
+  document.body.classList.remove("theme-changing");
+  requestAnimationFrame(() => document.body.classList.add("theme-changing"));
+  window.setTimeout(() => document.body.classList.remove("theme-changing"), 760);
+});
 
 if (menuToggle && siteNav) {
   menuToggle.addEventListener("click", () => {

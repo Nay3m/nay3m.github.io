@@ -1,11 +1,19 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Jannatul Nayeem is a Zoology undergraduate building a field-ready foundation in wildlife conservation, biodiversity, species monitoring, habitat assessment, and GIS.">
     <meta name="theme-color" content="#18352e">
     <title>Jannatul Nayeem | Wildlife field notes</title>
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("jn-theme");
+        if (savedTheme === "dark" || savedTheme === "light") {
+          document.documentElement.dataset.theme = savedTheme;
+        }
+      } catch (error) {}
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500;6..72,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -19,13 +27,19 @@
           <span class="wordmark-mark">JN</span>
           <span class="wordmark-copy">Jannatul Nayeem<small>field notes / zoology</small></span>
         </a>
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu<span class="menu-line"></span></button>
-        <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
-          <a href="#fieldbook">Fieldbook</a>
-          <a href="#research">Research lens</a>
-          <a href="#journey">Trail so far</a>
-          <a href="#contact">Contact</a>
-        </nav>
+        <div class="nav-actions">
+          <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu<span class="menu-line"></span></button>
+          <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+            <a href="#fieldbook">Fieldbook</a>
+            <a href="#research">Research lens</a>
+            <a href="#journey">Trail so far</a>
+            <a href="#contact">Contact</a>
+          </nav>
+          <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+            <span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-drop"><svg viewBox="0 0 24 24"><path d="M12 2.5C10.2 5.8 5.5 10.4 5.5 14.8a6.5 6.5 0 0 0 13 0C18.5 10.4 13.8 5.8 12 2.5Z"></path></svg></span></span>
+            <span class="theme-toggle-label">light</span>
+          </button>
+        </div>
       </div>
     </header>
 
