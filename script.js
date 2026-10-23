@@ -3,6 +3,7 @@ const siteNav = document.querySelector(".site-nav");
 const themeToggle = document.querySelector("[data-theme-toggle]");
 const themeToggleLabel = document.querySelector(".theme-toggle-label");
 const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+const themeDrop = document.querySelector("[data-theme-drop]");
 
 const setTheme = (theme, persist = false) => {
   document.documentElement.dataset.theme = theme;
@@ -35,28 +36,43 @@ setTheme(document.documentElement.dataset.theme || "light");
 const clearThemeAnimation = () => {
   document.documentElement.classList.remove("theme-rippling");
   document.body.classList.remove("theme-changing");
+  themeDrop?.classList.remove("is-active");
 };
 
 const animateThemeChange = (nextTheme, event) => {
-  const x = event.clientX || window.innerWidth / 2;
-  const y = event.clientY || 42;
-  const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+  if (document.documentElement.classList.contains("theme-rippling")) {
+    return;
+  }
+
+  const toggleRect = themeToggle?.getBoundingClientRect();
+  const fallbackX = toggleRect ? toggleRect.left + toggleRect.width / 2 : window.innerWidth / 2;
+  const fallbackY = toggleRect ? toggleRect.top + toggleRect.height / 2 : 42;
+  const x = event.clientX > 0 ? event.clientX : fallbackX;
+  const y = event.clientY > 0 ? event.clientY : fallbackY;
   const root = document.documentElement;
 
   root.style.setProperty("--ripple-x", `${x}px`);
   root.style.setProperty("--ripple-y", `${y}px`);
-  root.style.setProperty("--ripple-radius", `${radius}px`);
+  root.style.setProperty("--ripple-rx", "160vmax");
+  root.style.setProperty("--ripple-ry", "90vmax");
   root.style.setProperty("--drop-x", `${x}px`);
   root.style.setProperty("--drop-y", `${y}px`);
   root.classList.add("theme-rippling");
-  document.body.classList.remove("theme-changing");
 
   const update = () => setTheme(nextTheme, true);
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  if (document.startViewTransition && !reduceMotion) {
+  if (reduceMotion) {
+    update();
+    clearThemeAnimation();
+    return;
+  }
+
+  themeDrop?.classList.add("is-active");
+  document.body.classList.add("theme-changing");
+
+  if (document.startViewTransition) {
     try {
-      document.body.classList.add("theme-changing");
       const transition = document.startViewTransition(update);
       transition.finished.finally(clearThemeAnimation);
       return;
@@ -66,8 +82,7 @@ const animateThemeChange = (nextTheme, event) => {
   }
 
   update();
-  requestAnimationFrame(() => document.body.classList.add("theme-changing"));
-  window.setTimeout(clearThemeAnimation, 760);
+  window.setTimeout(clearThemeAnimation, 2200);
 };
 
 themeToggle?.addEventListener("click", (event) => {
