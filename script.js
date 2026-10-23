@@ -37,6 +37,7 @@ const clearThemeAnimation = () => {
   document.documentElement.classList.remove("theme-rippling");
   document.body.classList.remove("theme-changing");
   themeDrop?.classList.remove("is-active");
+  themeDrop?.classList.remove("is-fallback");
 };
 
 const animateThemeChange = (nextTheme, event) => {
@@ -55,6 +56,7 @@ const animateThemeChange = (nextTheme, event) => {
   root.style.setProperty("--ripple-y", `${y}px`);
   root.style.setProperty("--ripple-rx", "160vmax");
   root.style.setProperty("--ripple-ry", "90vmax");
+  root.style.setProperty("--ripple-cover", nextTheme === "dark" ? "#081c17" : "#f1eadc");
   root.style.setProperty("--drop-x", `${x}px`);
   root.style.setProperty("--drop-y", `${y}px`);
   root.classList.add("theme-rippling");
@@ -77,12 +79,15 @@ const animateThemeChange = (nextTheme, event) => {
       transition.finished.finally(clearThemeAnimation);
       return;
     } catch (error) {
-      clearThemeAnimation();
+      themeDrop?.classList.add("is-fallback");
     }
   }
 
-  update();
-  window.setTimeout(clearThemeAnimation, 2200);
+  themeDrop?.classList.add("is-fallback");
+  window.setTimeout(() => {
+    update();
+    clearThemeAnimation();
+  }, 2200);
 };
 
 themeToggle?.addEventListener("click", (event) => {
