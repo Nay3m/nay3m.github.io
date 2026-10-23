@@ -52,6 +52,7 @@ const clearThemeAnimation = () => {
   themeSplashDrops.forEach((drop) => drop.remove());
   themeSplashDrops = [];
   document.documentElement.classList.remove("theme-rippling");
+  document.documentElement.classList.remove("theme-transitioning");
   document.body.classList.remove("theme-changing");
   themeDrop?.classList.remove("is-active");
   themeDrop?.classList.remove("is-fallback");
@@ -63,6 +64,7 @@ const clearThemeAnimation = () => {
   themeDropBead?.style.removeProperty("left");
   themeDropBead?.style.removeProperty("top");
   themeRippleCover?.style.removeProperty("opacity");
+  themeRippleCover?.style.removeProperty("clip-path");
   themeWaterFlow?.classList.remove("is-flowing");
   themeWaterRipple?.classList.remove("is-flowing");
   themeBirds.forEach((bird) => {
@@ -98,8 +100,8 @@ const animateThemeChange = async (nextTheme) => {
   const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
   const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
   const x = toggleRect ? toggleRect.left + toggleRect.width / 2 : viewportWidth / 2;
-  const dropStartY = toggleRect ? toggleRect.bottom - 8 : 42;
-  const y = Math.min(Math.max(viewportHeight * 0.42, dropStartY + 180), viewportHeight - 60);
+  const dropStartY = toggleRect ? toggleRect.bottom - 4 : 42;
+  const y = Math.min(Math.max(viewportHeight * 0.40, dropStartY + 180), viewportHeight - 60);
   const rippleRadius = Math.hypot(Math.max(x, viewportWidth - x), Math.max(y, viewportHeight - y) / 0.55) + 40;
   const rippleX = `${x}px`;
   const rippleY = `${y}px`;
@@ -136,29 +138,13 @@ const animateThemeChange = async (nextTheme) => {
   themeDrop?.classList.add("is-active");
   document.body.classList.add("theme-changing");
 
-  const birdPlans = [
-    { offsetX: -150, offsetY: -90, dx: -150, dy: -32, duration: 980, delay: 30, scale: 0.82 },
-    { offsetX: 56, offsetY: -128, dx: 166, dy: -48, duration: 1040, delay: 140, scale: 0.58 },
-    { offsetX: -30, offsetY: -160, dx: 78, dy: -26, duration: 860, delay: 90, scale: 0.44 }
-  ];
-
-  themeBirds.forEach((bird, index) => {
-    const plan = birdPlans[index];
-    bird.style.left = `${x + plan.offsetX}px`;
-    bird.style.top = `${Math.max(70, y + plan.offsetY)}px`;
-    registerAnimation(bird, [
-      { transform: `translate(0, 8px) scale(${plan.scale})`, opacity: 0 },
-      { transform: `translate(${plan.dx * 0.35}px, ${plan.dy * 0.3}px) scale(${plan.scale})`, opacity: 0.78, offset: 0.22 },
-      { transform: `translate(${plan.dx}px, ${plan.dy}px) scale(${plan.scale * 0.86})`, opacity: 0 }
-    ], { duration: plan.duration, delay: plan.delay, easing: "cubic-bezier(0.22, 0.61, 0.36, 1)", fill: "both" });
-  });
-
+  // Step 1: Droplet forms under the toggle button
   const dropToButton = registerAnimation(themeDropSvg, [
-    { transform: `${move(dropStartY)} scale(0.25)`, opacity: 0 },
-    { transform: `${move(dropStartY)} scale(0.8, 0.66)`, opacity: 1, offset: 0.45 },
-    { transform: `${move(dropStartY)} scale(1.06, 0.9)`, opacity: 1, offset: 0.75 },
-    { transform: `${move(dropStartY)} scale(1)`, opacity: 1 }
-  ], { duration: 340, easing: "cubic-bezier(0.25, 0, 0.3, 1)", fill: "forwards" });
+    { transform: `${move(dropStartY)} scale(0.2)`, opacity: 0 },
+    { transform: `${move(dropStartY + 4)} scale(0.8, 0.7)`, opacity: 0.95, offset: 0.4 },
+    { transform: `${move(dropStartY + 10)} scale(1.08, 0.94)`, opacity: 1, offset: 0.75 },
+    { transform: `${move(dropStartY + 14)} scale(1)`, opacity: 1 }
+  ], { duration: 280, easing: "cubic-bezier(0.25, 0, 0.3, 1)", fill: "forwards" });
 
   if (!await waitForAnimation(dropToButton) || run !== themeAnimationRun) {
     if (run === themeAnimationRun) {
@@ -167,14 +153,15 @@ const animateThemeChange = async (nextTheme) => {
     return;
   }
 
+  // Step 2: Droplet accelerates downward under gravity toward the waterline
   const impactOffset = y - 42;
   const fallDistance = Math.max(60, impactOffset - dropStartY);
-  const fallDuration = Math.max(360, Math.sqrt(fallDistance) * 27);
+  const fallDuration = Math.max(340, Math.min(480, Math.sqrt(fallDistance) * 24));
   themeDropSvg.style.transformOrigin = "50% 100%";
   const dropToWater = registerAnimation(themeDropSvg, [
-    { transform: `${move(dropStartY)} scale(1)` },
-    { transform: `${move(dropStartY + 10)} scale(0.93, 1.12)`, offset: 0.14 },
-    { transform: `${move(impactOffset)} scale(0.95, 1.1)` }
+    { transform: `${move(dropStartY + 14)} scale(1, 1.05)` },
+    { transform: `${move(dropStartY + 35)} scale(0.92, 1.16)`, offset: 0.18 },
+    { transform: `${move(impactOffset)} scale(0.96, 1.12)` }
   ], { duration: fallDuration, easing: "cubic-bezier(0.33, 0, 0.67, 0.33)", fill: "forwards" });
 
   if (!await waitForAnimation(dropToWater) || run !== themeAnimationRun) {
@@ -184,21 +171,36 @@ const animateThemeChange = async (nextTheme) => {
     return;
   }
 
+  // Step 3: THE MOMENT OF IMPACT
+  // Immediately start the atmospheric theme shift with smooth transitions!
+  document.documentElement.classList.add("theme-transitioning");
+  update();
+
+  // Droplet flattens into the water surface and dissipates
+  registerAnimation(themeDropSvg, [
+    { transform: `${move(impactOffset)} scale(0.96, 1.12)`, opacity: 1 },
+    { transform: `${move(impactOffset + 4)} scale(2.0, 0.16)`, opacity: 0 }
+  ], { duration: 160, easing: "cubic-bezier(0.15, 0.6, 0.4, 1)", fill: "forwards" });
+
+  // Water ripple ring and water flow lines start flowing
   themeWaterFlow?.classList.add("is-flowing");
   themeWaterRipple?.classList.add("is-flowing");
 
-  registerAnimation(themeDropSvg, [
-    { transform: `${move(impactOffset)} scale(0.95, 1.1)`, opacity: 1 },
-    { transform: `${move(impactOffset)} scale(1.9, 0.2)`, opacity: 0 }
-  ], { duration: 170, easing: "cubic-bezier(0.15, 0.6, 0.4, 1)", fill: "forwards" });
+  // Rebound bead pops up and settles back
+  registerAnimation(themeDropBead, [
+    { transform: "translate(-50%, 0) scale(1)", opacity: 0.9 },
+    { transform: "translate(-50%, -42px) scale(0.75)", opacity: 0.9, offset: 0.48 },
+    { transform: "translate(-50%, 6px) scale(0.4)", opacity: 0 }
+  ], { delay: 60, duration: 460, easing: "cubic-bezier(0.2, 0.8, 0.4, 1)", fill: "both" });
 
+  // Splash droplets arc outward
   const splashSpecs = [
-    { dx: -34, rise: 18, size: 4, duration: 500 },
-    { dx: -20, rise: 26, size: 5, duration: 560 },
-    { dx: -8, rise: 30, size: 4, duration: 600 },
-    { dx: 9, rise: 28, size: 5, duration: 580 },
-    { dx: 22, rise: 23, size: 4, duration: 540 },
-    { dx: 35, rise: 16, size: 3, duration: 490 }
+    { dx: -38, rise: 22, size: 5, duration: 480 },
+    { dx: -22, rise: 32, size: 6, duration: 530 },
+    { dx: -9, rise: 38, size: 5, duration: 570 },
+    { dx: 9, rise: 36, size: 6, duration: 550 },
+    { dx: 24, rise: 28, size: 5, duration: 510 },
+    { dx: 38, rise: 18, size: 4, duration: 460 }
   ];
 
   splashSpecs.forEach(({ dx, rise, size, duration }) => {
@@ -218,40 +220,41 @@ const animateThemeChange = async (nextTheme) => {
     registerAnimation(splash.firstElementChild, [
       { transform: "translateY(0) scale(1)", opacity: 0.95 },
       { transform: `translateY(${-rise}px) scale(0.8)`, opacity: 0.95, offset: 0.52 },
-      { transform: "translateY(5px) scale(0.4)", opacity: 0 }
+      { transform: "translateY(6px) scale(0.35)", opacity: 0 }
     ], { duration, easing: "cubic-bezier(0.2, 0.7, 0.4, 1)", fill: "both" });
   });
 
-  registerAnimation(themeDropBead, [
-    { transform: "translate(-50%, 0) scale(1)", opacity: 0.9 },
-    { transform: "translate(-50%, -46px) scale(0.7)", opacity: 0.9, offset: 0.5 },
-    { transform: "translate(-50%, 4px) scale(0.45)", opacity: 0 }
-  ], { delay: 90, duration: 480, easing: "cubic-bezier(0.2, 0.8, 0.4, 1)", fill: "both" });
+  // Birds glide across the open sky (positioned inside visible area, soaring leftward)
+  const birdPlans = [
+    { offsetX: -60, offsetY: -105, dx: -240, dy: -36, duration: 1100, delay: 20, scale: 0.85 },
+    { offsetX: -125, offsetY: -145, dx: -280, dy: -48, duration: 1200, delay: 90, scale: 0.65 },
+    { offsetX: -25, offsetY: -75, dx: -200, dy: -24, duration: 1000, delay: 140, scale: 0.50 }
+  ];
 
-  const startFallback = () => {
-    root.classList.remove("theme-rippling");
-    themeDrop.classList.add("is-fallback");
-    themeRippleCover.style.opacity = "1";
-    const coverAnimation = registerAnimation(themeRippleCover, [
-      { clipPath: `ellipse(0 0 at ${rippleX} ${rippleY})` },
-      { clipPath: `ellipse(${rippleRx} ${rippleRy} at ${rippleX} ${rippleY})` }
-    ], { duration: 2200, easing: "cubic-bezier(0.12, 0.72, 0.28, 1)", fill: "both" });
-    let fallbackFinished = false;
-    const finishFallback = () => {
-      if (fallbackFinished || run !== themeAnimationRun) {
-        return;
-      }
-      fallbackFinished = true;
-      update();
+  themeBirds.forEach((bird, index) => {
+    const plan = birdPlans[index];
+    bird.style.left = `${Math.min(viewportWidth - 50, Math.max(120, x + plan.offsetX))}px`;
+    bird.style.top = `${Math.max(65, y + plan.offsetY)}px`;
+    registerAnimation(bird, [
+      { transform: `translate(0, 10px) scale(${plan.scale})`, opacity: 0 },
+      { transform: `translate(${plan.dx * 0.35}px, ${plan.dy * 0.3}px) scale(${plan.scale})`, opacity: 0.85, offset: 0.25 },
+      { transform: `translate(${plan.dx}px, ${plan.dy}px) scale(${plan.scale * 0.88})`, opacity: 0 }
+    ], { duration: plan.duration, delay: plan.delay, easing: "cubic-bezier(0.22, 0.61, 0.36, 1)", fill: "both" });
+  });
+
+  // Water shimmer wave radiating from the impact point
+  themeRippleCover.style.opacity = "1";
+  registerAnimation(themeRippleCover, [
+    { clipPath: `ellipse(0px 0px at ${rippleX} ${rippleY})`, opacity: 0.95 },
+    { clipPath: `ellipse(${rippleRx} ${rippleRy} at ${rippleX} ${rippleY})`, opacity: 0 }
+  ], { duration: 800, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "both" });
+
+  // Clean finish once the ripple and palette transition settle
+  window.setTimeout(() => {
+    if (run === themeAnimationRun) {
       clearThemeAnimation();
-    };
-    coverAnimation.finished.then(() => {
-      finishFallback();
-    }).catch(() => {});
-    window.setTimeout(finishFallback, 2400);
-  };
-
-  startFallback();
+    }
+  }, 950);
 };
 
 themeToggle?.addEventListener("click", () => {
@@ -285,27 +288,135 @@ const habitatNotes = {
 const heroArt = document.querySelector(".hero-art");
 const habitatNote = document.querySelector("#habitat-note");
 
-document.querySelectorAll(".habitat-tab").forEach((tab) => {
+const habitatTabs = Array.from(document.querySelectorAll(".habitat-tab"));
+
+habitatTabs.forEach((tab, index) => {
   tab.addEventListener("click", () => {
     const habitat = tab.dataset.habitat;
-    heroArt.dataset.habitat = habitat;
-    habitatNote.textContent = habitatNotes[habitat];
-    document.querySelectorAll(".habitat-tab").forEach((item) => {
+    if (heroArt) heroArt.dataset.habitat = habitat;
+    if (habitatNote) habitatNote.textContent = habitatNotes[habitat];
+    habitatTabs.forEach((item) => {
       const selected = item === tab;
       item.classList.toggle("is-active", selected);
       item.setAttribute("aria-selected", String(selected));
     });
   });
+
+  tab.addEventListener("keydown", (event) => {
+    let targetIndex = index;
+    if (event.key === "ArrowRight") {
+      targetIndex = (index + 1) % habitatTabs.length;
+    } else if (event.key === "ArrowLeft") {
+      targetIndex = (index - 1 + habitatTabs.length) % habitatTabs.length;
+    } else if (event.key === "Home") {
+      targetIndex = 0;
+    } else if (event.key === "End") {
+      targetIndex = habitatTabs.length - 1;
+    } else {
+      return;
+    }
+    event.preventDefault();
+    habitatTabs[targetIndex].click();
+    habitatTabs[targetIndex].focus();
+  });
 });
+
+/* ── Scroll-driven: fixed header, reading progress, scroll spy ── */
+
+const siteHeader = document.querySelector(".site-header");
+const readingProgress = document.querySelector(".reading-progress");
+const navLinks = [...document.querySelectorAll(".site-nav a[href^='#']")];
+const sections = navLinks
+  .map((link) => document.querySelector(link.getAttribute("href")))
+  .filter(Boolean);
+
+let lastScrollY = 0;
+let ticking = false;
+
+const onScroll = () => {
+  lastScrollY = window.scrollY;
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      // 1. Sticky header glass effect
+      if (siteHeader) {
+        siteHeader.classList.toggle("is-scrolled", lastScrollY > 60);
+      }
+
+      // 2. Reading progress bar
+      if (readingProgress) {
+        const docHeight = document.documentElement.scrollHeight;
+        const viewHeight = window.innerHeight;
+        const progress = Math.min(lastScrollY / (docHeight - viewHeight), 1) * 100;
+        readingProgress.style.width = `${progress}%`;
+      }
+
+      // 3. Scroll spy — highlight current section
+      let current = "";
+      for (let i = sections.length - 1; i >= 0; i--) {
+        if (sections[i].getBoundingClientRect().top <= 120) {
+          current = sections[i].id;
+          break;
+        }
+      }
+      navLinks.forEach((link) => {
+        link.classList.toggle("is-active", link.getAttribute("href") === `#${current}`);
+      });
+
+      ticking = false;
+    });
+    ticking = true;
+  }
+};
+
+window.addEventListener("scroll", onScroll, { passive: true });
+onScroll(); // set initial state
+
+/* ── Hero facts stagger entrance ── */
+
+const heroFacts = document.querySelector(".hero-facts");
+if (heroFacts) {
+  const factsObserver = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.3 }
+  );
+  factsObserver.observe(heroFacts);
+}
+
+/* ── Reveal-on-scroll with stagger for sibling groups ── */
 
 const revealItems = document.querySelectorAll("[data-reveal]");
 
 if ("IntersectionObserver" in window) {
+  const staggerParents = new Map();
+
   const observer = new IntersectionObserver((entries, currentObserver) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
-        currentObserver.unobserve(entry.target);
+        const el = entry.target;
+        const parent = el.parentElement;
+
+        // Stagger siblings revealed in the same parent
+        if (!staggerParents.has(parent)) {
+          staggerParents.set(parent, 0);
+        }
+        const index = staggerParents.get(parent);
+        staggerParents.set(parent, index + 1);
+
+        el.style.transitionDelay = `${index * 80}ms`;
+        el.classList.add("is-visible");
+        currentObserver.unobserve(el);
+
+        // Clean up the delay after animation
+        setTimeout(() => {
+          el.style.transitionDelay = "";
+        }, 650 + index * 80 + 50);
       }
     });
   }, { threshold: 0.12 });
@@ -329,11 +440,6 @@ if (copyEmail) {
     }
   });
 }
-
-document.querySelector("[data-placeholder-link]")?.addEventListener("click", (event) => {
-  event.preventDefault();
-  contactStatus.textContent = "Add the verified LinkedIn profile URL before publishing.";
-});
 
 const yearTarget = document.querySelector("[data-year]");
 if (yearTarget) {
