@@ -369,6 +369,7 @@ h1 em {
   background: rgba(18, 53, 45, 0.48);
   box-shadow: 18px 18px 0 rgba(9, 35, 29, 0.25);
   transition: background 300ms ease;
+  animation: art-settle 850ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .hero-art[data-habitat="canopy"] {
@@ -422,6 +423,9 @@ h1 em {
   fill: none;
   stroke: var(--art-main);
   stroke-width: 1.1;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sun-pulse 7s ease-in-out infinite;
 }
 
 .contour,
@@ -447,11 +451,15 @@ h1 em {
 .water {
   fill: rgba(93, 146, 138, 0.28);
   stroke: none;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: water-drift 10s ease-in-out infinite;
 }
 
 .water-line {
   stroke: var(--art-main);
   stroke-width: 1.1;
+  animation: water-line-drift 8s ease-in-out infinite;
 }
 
 .water-line.faint {
@@ -461,11 +469,29 @@ h1 em {
 .reeds path {
   stroke: var(--art-main);
   stroke-width: 1.15;
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  animation: reed-sway 6s ease-in-out infinite;
+}
+
+.reeds path:nth-child(2n) {
+  animation-delay: -1.6s;
+}
+
+.reeds path:nth-child(3n) {
+  animation-delay: -3.1s;
 }
 
 .birds path {
   stroke: var(--art-main);
   stroke-width: 1.2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bird-glide 12s ease-in-out infinite;
+}
+
+.birds path:nth-child(2n) {
+  animation-delay: -4s;
 }
 
 .leaf-mark path:first-child {
@@ -476,6 +502,12 @@ h1 em {
 .leaf-mark path:last-child {
   stroke: var(--art-main);
   stroke-width: 0.9;
+}
+
+.leaf-mark {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: leaf-breathe 8s ease-in-out infinite;
 }
 
 .habitat-switcher {
@@ -667,6 +699,7 @@ h1 em {
   line-height: 1.55;
   text-transform: uppercase;
   transform: rotate(-8deg);
+  animation: stamp-float 6s ease-in-out infinite;
 }
 
 .stamp-ring strong {
@@ -1141,6 +1174,101 @@ h1 em {
   transform: translateY(0);
 }
 
+@keyframes art-settle {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes sun-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(0.96);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes water-drift {
+  0%,
+  100% {
+    transform: translateX(-4px) scaleX(1);
+  }
+
+  50% {
+    transform: translateX(4px) scaleX(1.015);
+  }
+}
+
+@keyframes water-line-drift {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: translateX(-3px);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(3px);
+  }
+}
+
+@keyframes reed-sway {
+  0%,
+  100% {
+    transform: rotate(-1.5deg);
+  }
+
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes bird-glide {
+  0%,
+  100% {
+    opacity: 0.62;
+    transform: translate(0, 0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translate(6px, -4px);
+  }
+}
+
+@keyframes leaf-breathe {
+  0%,
+  100% {
+    transform: rotate(-1deg) scale(0.98);
+  }
+
+  50% {
+    transform: rotate(2deg) scale(1.02);
+  }
+}
+
+@keyframes stamp-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-8deg);
+  }
+
+  50% {
+    transform: translateY(-5px) rotate(-6deg);
+  }
+}
+
 @media (max-width: 1000px) {
   .hero {
     grid-template-columns: 1fr;
@@ -1436,6 +1564,73 @@ h1 em {
     align-items: flex-start;
     flex-direction: column;
     gap: 8px;
+  }
+}
+
+@media (max-width: 430px) {
+  .section-shell,
+  .nav-wrap {
+    width: min(calc(100% - 28px), var(--max));
+  }
+
+  .hero {
+    padding-top: 116px;
+  }
+
+  h1 {
+    font-size: clamp(49px, 17vw, 70px);
+  }
+
+  .hero-facts {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .hero-facts div {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    align-items: baseline;
+    column-gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(241, 234, 220, 0.14);
+  }
+
+  .hero-facts div:last-child {
+    border-bottom: 0;
+  }
+
+  .hero-facts span {
+    grid-row: span 2;
+  }
+
+  .hero-facts strong,
+  .hero-facts small {
+    margin: 0;
+  }
+
+  .hero-art {
+    min-height: 370px;
+    box-shadow: 10px 10px 0 rgba(9, 35, 29, 0.25);
+  }
+
+  .art-note {
+    max-width: 128px;
+    font-size: 10px;
+  }
+
+  .section-heading h2,
+  .trail-intro h2,
+  .toolkit-grid h2,
+  .contact-inner h2 {
+    font-size: 42px;
+  }
+
+  .contact-link {
+    font-size: 15px;
+  }
+
+  .contact-link span {
+    flex-basis: 53px;
   }
 }
 
