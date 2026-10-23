@@ -1708,6 +1708,19 @@ h1 em {
 }
 
 @media (max-width: 700px) {
+  .theme-bird {
+    width: 25px;
+    height: 13px;
+  }
+
+  .theme-bird::before,
+  .theme-bird::after {
+    top: 5px;
+    width: 13px;
+    height: 7px;
+    border-top-width: 1.5px;
+  }
+
   .section-shell,
   .nav-wrap {
     width: min(calc(100% - 36px), var(--max));
